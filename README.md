@@ -1,4 +1,4 @@
-# uwit-iam/flask-example
+# Flask app template repository 
 
 A barebones flask app that can be run as a docker container and deployed to 
 a running kubernetes cluster. Can also be used as a template
