@@ -4,6 +4,28 @@ A barebones flask app that can be run as a docker container and deployed to
 a running kubernetes cluster. Can also be used as a template
 repository for creating new apps.
 
+## Using this template
+
+This is a template repository. You can clone it and make a new app with it!
+Just click the "Use this template" button from [Github](https://github.
+com/uwit-iam/example-flask-app).
+
+Then, you will need to change the following:
+
+**In `pyproject.toml`, change the `name` value.** This value is only 
+functionally important if you are publishing your project to PyPI or some other 
+python package manager.
+
+**(Optionally) Change the `example_app` directory name.** 
+While this default name will work, it is 
+not very descriptive and may make debugging more difficult. 
+
+**If you changed the `example_app` directory name, update the `Dockerfile`.
+Replace instances of `example_app` in the Dockerfile to match your new directory name.
+
+**Delete this section of the README.md.** Unless you're creating a template repo 
+yourself, you should delete these template instructions.
+
 ## Requirements
 
 **...to run and test**
