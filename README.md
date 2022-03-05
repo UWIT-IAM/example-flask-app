@@ -16,12 +16,12 @@ Then, you will need to change the following:
 functionally important if you are publishing your project to PyPI or some other 
 python package manager.
 
-**(Optionally) Change the `example_app` directory name.** 
+**(Optionally, but preferably) Change the `example_app` directory name.** 
 While this default name will work, it is 
 not very descriptive and may make debugging more difficult. 
 
-**If you changed the `example_app` directory name, update the `Dockerfile`.
-Replace instances of `example_app` in the Dockerfile to match your new directory name.
+**If you changed the `example_app` directory name, update the `APP_MODULE` argument 
+in the dockerfile to match.
 
 **Delete this section of the README.md.** Unless you're creating a template repo 
 yourself, you should delete these template instructions.
