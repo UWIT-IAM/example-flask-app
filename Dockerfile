@@ -24,8 +24,3 @@ COPY tests/ ./tests/
 ENV PYTHONPATH="/app"
 RUN poetry install --no-root --no-interaction  # Install dev dependencies
 ENTRYPOINT ["pytest"]
-
-FROM app AS deployment
-ARG DEPLOYMENT_ID=""
-ENV DEPLOYMENT_ID="${DEPLOYMENT_ID}"
-RUN test -n "${DEPLOYMENT_ID}"  # Require DEPLOYMENT_ID to be provided when building

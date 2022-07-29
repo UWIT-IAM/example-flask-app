@@ -1,0 +1,48 @@
+# For a full list of configuration available for the `values`
+# section, refer to
+# https://github.com/uw-iti-app-platform/helm-charts/blob/main/basic-web-service/values.yaml
+#
+# To use this, paste it into a flux-monitored repository (e.g., uwit-iam/gcp-k8)
+# and update any values that need updating.
+#
+# This is very minimal configuration!
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: identity-artifact
+  namespace: default
+spec:
+  values:
+    app:
+      name: example-flask-app   # Update this!
+      clusterDomain: iamdev.s.uw.edu
+    replicaCount: 1
+    ports:
+      containerHttpPort: 5000
+    service:
+      port: 80
+    ingress:
+      enabled: true
+    resources:
+      requests:
+        memory: "32M"
+        cpu: "50m"
+      limits:
+        memory: "64M"
+        cpu: "100m"
+    image:
+      name: gcr.io/uwit-mci-iam/example-flask-app
+      # UPDATE the imagepolicy to read "default:<app-name>-policy:tag"
+      tag: latest  # {"$imagepolicy": "default:example-flask-app-policy:tag"}
+
+  chart:
+    spec:
+      chart: basic-web-service
+      version: 0.3.6
+      sourceRef:
+        # This assumes there is already a helm-chart-repository defined in
+        # your flux-monitored repository (e.g., gcp-k8)
+        kind: HelmRepository
+        name: helm-chart-repository
+        namespace: default
+  interval: 1m0s

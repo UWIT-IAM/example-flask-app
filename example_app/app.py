@@ -10,7 +10,7 @@ def index():
     print("Hello there")
     return 'OK', 200
 
-
+# TODO: Oh no this has to be fixed first.
 @app.route("/status")
 def status():
     deployment_id = os.environ.get('DEPLOYMENT_ID')

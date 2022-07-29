@@ -26,6 +26,7 @@ in the dockerfile to match.
 **Delete this section of the README.md.** Unless you're creating a template repo 
 yourself, you should delete these template instructions.
 
+
 ## Requirements
 
 **...to run and test**
@@ -35,7 +36,7 @@ yourself, you should delete these template instructions.
 **...to deploy and maintain**
 
 - A running docker daemon
-- [Poetry](https://python-poetry.org) 
+- [Poetry](https://python-poetry.org)
 
 ## Run locally
 
@@ -65,13 +66,49 @@ then visit http://localhost:5000 in your browser.
 docker run -it $(docker build -q --target tests .)
 ```
 
-## Deploy
+## Build the app
 
-```bash
-export DEPLOYMENT_ID="deploy-dev.$(date '+%Y.%m.%d.%H.%M.%S').v$(poetry version -s 2>/dev/null)"
-docker build --target deployment --build-arg DEPLOYMENT_ID \
-    -t ${YOUR_REPOSITORY}/example-flask-app:${DEPLOYMENT_ID} .
-docker push "${YOUR_REPOSITORY}/example-flask-app:${DEPLOYMENT_ID}"
+This app uses the [uw-it-build-fingerprinter](https://github.com/uwit-iam/fingerprinter),
+the configuration lives in [fingerprints.yaml](fingerprints.yaml). The repository
+documentation details how this configuration works.
+
+This requires docker, and assumes you have already run `poetry install`.
+
+To build the app:
+
+```
+./scripts/build.sh
 ```
 
-where `YOUR_REPOSITORY` is something like: `ghcr.io/uwit-iam`. 
+Use `--help` for more options.
+
+
+## Deploy
+
+Substitute `dev` with some other stage, if you prefer.
+
+### Deploy the existing code base to dev using a test tag
+
+```bash
+./scripts/build.sh --deploy dev --release $(poetry version -s).local.$(whoami)
+```
+
+### Deploy a previously tagged version to dev
+
+```bash
+./scripts/build.sh --deploy dev -dversion $(poetry version -s)
+```
+
+# Common workflows
+
+## Build and cache layers with additional tags
+
+```
+./scripts/build.sh -t extra-tag --cache
+```
+
+## Create a release version that can be deployed
+
+```
+./scripts/build.sh --release $(poetry version -s)
+```

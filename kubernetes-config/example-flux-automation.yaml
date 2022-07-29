@@ -1,0 +1,36 @@
+# To use this, paste it into a flux-monitored repository (e.g., uwit-iam/gcp-k8)
+# and update any values that need updating. Read the comments below
+# to know what needs to be updated. Look for 'UPDATE'
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  # UPDATE this to match your app's name in example-helm-release:
+  # i.e: <app-name>-policy
+  name: example-flask-app-policy
+  namespace: default # must be 'default' in MCI, even if app itself is not in default
+spec:
+  imageRepositoryRef:
+    # UPDATE this to match your app's name in example-helm-release:
+    # i.e: <app-name>-gcr
+    name: example-flask-app-gcr
+  filterTags:
+    # Matches pattern "deploy-dev.2021.11.16.12.15.v1.2.3"
+    # Sorts on extraction "2021.11.16.12.15"
+    pattern: '^deploy-dev.(?P<ts>[0-9\.]+)\.v.+$'
+    extract: '$ts'
+  policy:
+    alphabetical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  # UPDATE this to match your app's name in example-helm-release:
+  # i.e: <app-name>-gcr
+  name: example-flask-app-gcr
+  namespace: default # must be 'default' in MCI, even if app itself is not in default
+spec:
+  image: gcr.io/uwit-mci-iam/example-flask-app
+  interval: 2m0s
+  secretRef:
+    name: flux-mci-registry-credential
