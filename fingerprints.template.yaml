@@ -5,7 +5,7 @@
 release-target: app
 docker:
   repository: gcr.io/uwit-mci-iam
-  app-name: example-flask-app
+  app-name: ${template:app_name}
 
 targets:
   dependencies:
