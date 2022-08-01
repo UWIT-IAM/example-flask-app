@@ -9,12 +9,12 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: identity-artifact
+  name: ${template:app_name}
   namespace: default
 spec:
   values:
     app:
-      name: example-flask-app   # Update this!
+      name: ${template:app_name}
       clusterDomain: iamdev.s.uw.edu
     replicaCount: 1
     ports:
@@ -31,9 +31,8 @@ spec:
         memory: "64M"
         cpu: "100m"
     image:
-      name: gcr.io/uwit-mci-iam/example-flask-app
-      # UPDATE the imagepolicy to read "default:<app-name>-policy:tag"
-      tag: latest  # {"$imagepolicy": "default:example-flask-app-policy:tag"}
+      name: gcr.io/uwit-mci-iam/${template:app_name}
+      tag: latest  # {"$imagepolicy": "default:${template:app_name}-policy:tag"}
 
   chart:
     spec:

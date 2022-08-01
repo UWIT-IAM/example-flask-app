@@ -1,117 +1,80 @@
-# Flask app template repository 
+# Flask app template repository
 
-A barebones flask app that can be run as a docker container and deployed to 
-a running kubernetes cluster. Can also be used as a template
-repository for creating new apps.
+This is the README for a template you can use to create a repository.
+If you follow the instructions, this README will get overwritten by
+a README that is more appropriate for your application.
 
-## Using this template
+## Creating a repository from this template
 
-This is a template repository. You can clone it and make a new app with it!
-Just click the "Use this template" button from [Github](https://github.com/uwit-iam/example-flask-app).
+If you are reading this from the Github UI,
+click the button above that says "Use this template"
 
-Then, you will need to change the following:
+You will be asked to name your new repository. To take full advantage
+of the automation and kubernetes capabilities, you should create your new
+repository under the "UWIT-IAM" namespace; this gives you access to 
+secrets that are consumable in your Github actions.
 
-**In `pyproject.toml`, change the `name` value.** This value is only 
-functionally important if you are publishing your project to PyPI or some other 
-python package manager.
+Once you have done that, follow the instructions for
+[finalizing your template](#finalizing-your-template).
 
-**(Optionally, but preferably) Change the `example_app` directory name.** 
-While this default name will work, it is 
-not very descriptive and may make debugging more difficult. 
+## Finalizing your template
 
-**If you changed the `example_app` directory name, update the `APP_MODULE` argument 
-in the dockerfile to match.
+If you are reading this, and you are not in the `flask-example` template repository,
+then you haven't yet finalized your template!
 
-**Delete this section of the README.md.** Unless you're creating a template repo 
-yourself, you should delete these template instructions.
+To finalize the template, visit your repository on GitHub, 
+then click on "Actions."
 
+Click the "Finalize Template" workflow, and click "Run this workflow."
 
-## Requirements
+A pull request will be generated for you to review and merge! This message will 
+self-destruct after running that workflow.
 
-**...to run and test**
+## Updating the template
 
-- A running docker daemon
+This very basic templating engine does not allow for conditional logic.
 
-**...to deploy and maintain**
+To use an argument name inside a document, make sure the document is named `<name>.
+template.<ext>`, the final file name will be `<name>.<ext>`.
 
-- [Docker desktop](https://docker.com)
-- [Poetry](https://python-poetry.org)
+You can use any supported argument with the format: `${template:<arg_name>}`; all 
+values are treated as strings. 
 
-These instructions assume a unix-like terminal.
-
-After cloning, run `poetry install` to ensure you have all the necessary dependencies.
-
-## Run locally
-
-
-**...with docker**
-
-```bash
-docker run -p 5000:5000 -it $(docker build -q --target app .)
-```
-
-then visit http://localhost:5000 in your browser.
-
-**...without docker**
-
-
-```bash
-poetry install
-FLASK_APP="example_app/app.py" poetry run flask run
-```
-
-then visit http://localhost:5000 in your browser.
-
-
-## Test
-
-```bash
-docker run -it $(docker build -q --target tests .)
-```
-
-## Build the app
-
-This app uses the [uw-it-build-fingerprinter](https://github.com/uwit-iam/fingerprinter),
-the configuration lives in [fingerprints.yaml](fingerprints.yaml). The repository
-documentation details how this configuration works.
-
-This requires docker, and assumes you have already run `poetry install`.
-
-To build the app:
+Functionally:
 
 ```
-./scripts/build.sh
+# foo.template.yaml
+
+- policy-name: ${template:app_name}-policy
 ```
 
-Use `--help` for more options.
-
-
-## Deploy
-
-Substitute `dev` with some other stage, if you prefer.
-
-### Deploy the existing code base to dev using a test tag
-
-```bash
-./scripts/build.sh --deploy dev --release $(poetry version -s).local.$(whoami)
-```
-
-### Deploy a previously tagged version to dev
-
-```bash
-./scripts/build.sh --deploy dev -dversion $(poetry version -s)
-```
-
-# Common workflows
-
-## Build and cache layers with additional tags
+becomes:
 
 ```
-./scripts/build.sh -t extra-tag --cache
+# foo.yaml
+
+- policy-name: my-cool-app-policy
 ```
 
-## Create a release version that can be deployed
 
-```
-./scripts/build.sh --release $(poetry version -s)
-```
+### About templating templates...
+
+Please note that `.template.` files are interpolated before any other templating
+engine does anything; you may freely nest the `${template:<arg_name>}` syntax inside 
+other strings that other templating engines might use. 
+
+## Supported Values
+
+The currently supported arguments are:
+
+- `app_name`: The name the user wants to give the application created from this template
+- `maintainer`: The default maintainer for this new application
+
+## Add support for a new argument:
+
+To support a new value:
+
+- [ ] Add it to the list above ☝️
+- [ ] Add it to the argument list in `scripts/finalize-template.py`
+- [ ] Add it to the [Finalize Template workflow](.github/workflows/finalize-template.yaml)
+      inputs; ensure it is passed into the `finalize-template.py` script.

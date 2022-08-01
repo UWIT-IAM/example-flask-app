@@ -1,0 +1,60 @@
+name: Finalize Template
+
+on:
+  workflow_dispatch:
+    inputs:
+      app-name:
+        required: false
+        description: >
+          This is the name of your app; if left blank, it will match the
+          name of your repository, e.g. "UWIT-IAM/<app-name>"
+
+      maintainer:
+        required: false
+        description: >
+          The github username for the default repository maintainer;
+          if left blank, will match the github user invoking this workflow.
+
+jobs:
+  finalize-template:
+    permissions:
+      pull-requests: write
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: abatilo/actions-poetry@v2.1.4
+      - run: |
+          app_name="${{ github.event.inputs.app_name }}"
+          maintainer="${{ github.event.inputs.maintainer }}"
+          if [[ -z "${app_name}" ]]
+          then
+            app_name=$(echo "${{ github.repository }}" | cut -f2 -d'/')
+            echo "::notice::app name determined to be ${app_name}"
+          fi
+          if [[ -z "${maintainer}" ]]
+          then
+            maintainer="${{ github.actor }}"
+            echo "::notice::app name determined to be ${maintainer}"
+          fi
+          python scripts/finalize-template.py \
+            --app-name ${app_name} --maintainer ${maintainer}
+          rm .github/workflows/finalize-template.yaml
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4.0.4
+        with:
+          token: ${{ secrets.ACTIONS_PAT }}
+          branch: finalize-template
+          delete-branch: true
+          assignees: ${{ github.actor }}
+          reviewers: ${{ github.actor }}
+          labels: 'semver-guidance:no-bump'
+          title: Fill in template variables and finish configuring the repository
+          commit-message: >
+            Finalize template repository.
+
+            This request has been generated as the result of a GitHub action.
+
+            If everything looks OK to you, you can approve the pull request and merge
+            it in. Otherwise, you can either edit the pull request until it's to your
+            liking, or close it, and re-run the `finalize-template` workflow.

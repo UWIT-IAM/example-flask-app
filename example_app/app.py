@@ -10,12 +10,12 @@ def index():
     print("Hello there")
     return 'OK', 200
 
-# TODO: Oh no this has to be fixed first.
+
 @app.route("/status")
 def status():
     deployment_id = os.environ.get('DEPLOYMENT_ID')
     return jsonify({
-        'deploymentId': deployment_id
+        'deployment_id': deployment_id
     }), 200 if deployment_id else 503
 
 

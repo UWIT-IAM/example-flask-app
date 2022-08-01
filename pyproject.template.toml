@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "flask-example"
+name = "${template:app_name}"
 version = "0.1.0"
 description = ""
-authors = ["Tom Thorogood <goodtom@uw.edu>"]
+authors = []
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -11,7 +11,9 @@ Flask = "^2.0.2"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 pytest-flask = "^1.2.0"
-uw-it-build-fingerprinter = "^0.2.5"
+uw-it-build-fingerprinter = "^0.2.6"
+black = "^22.6.0"
+flake8 = "^5.0.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
