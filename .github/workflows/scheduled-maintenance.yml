@@ -35,8 +35,8 @@ jobs:
           commit-message: ${{ env.message }}
           delete-branch: true
           title: ${{ env.message }}
-          assignees: ${template:maintainer}
-          reviewers: ${template:maintainer}
+          assignees: tomthorogood
+          reviewers: tomthorogood
           labels: semver-guidance:patch
         env:
           message: '[bot] patch dependencies'

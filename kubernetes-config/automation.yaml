@@ -4,11 +4,11 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy
 metadata:
-  name: ${template:app_name}-policy
+  name: example-flask-app-policy
   namespace: default # must be 'default' in MCI, even if app itself is not in default
 spec:
   imageRepositoryRef:
-    name: ${template:app_name}-gcr
+    name: example-flask-app-gcr
   filterTags:
     pattern: '^deploy-dev.(?P<ts>[0-9\.]+)\.v.+$'
     extract: '$ts'
@@ -19,10 +19,10 @@ spec:
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageRepository
 metadata:
-  name: ${template:app_name}-gcr
+  name: example-flask-app-gcr
   namespace: default # must be 'default' in MCI, even if app itself is not in default
 spec:
-  image: gcr.io/uwit-mci-iam/${template:app_name}
+  image: gcr.io/uwit-mci-iam/example-flask-app
   interval: 2m0s
   secretRef:
     name: flux-mci-registry-credential

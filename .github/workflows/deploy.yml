@@ -62,7 +62,7 @@ jobs:
         if: '! env.target_version'
 
       - run: |
-          echo "::notice::Deploying ${template:app_name} version ${{ env.target_version }} to ${{ github.event.inputs.cluster }}"
+          echo "::notice::Deploying example-flask-app version ${{ env.target_version }} to ${{ github.event.inputs.cluster }}"
           ./scripts/build.sh \
             --deploy ${{ inputs.cluster }} \
             --dversion ${{ env.target_version }} ${{ env.DRY_RUN && '--ddry' || '' }}

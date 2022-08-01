@@ -65,7 +65,7 @@ jobs:
           ./scripts/build.sh \
             -t pull-request-${{ env.PR_TAG }} --cache
 
-      - run: docker push gcr.io/uwit-mci-iam/${template:app_name}:${{ env.pr_tag }}
+      - run: docker push gcr.io/uwit-mci-iam/example-flask-app:${{ env.pr_tag }}
 
       - name: Run validation checks and tests
         run: |
@@ -76,7 +76,7 @@ jobs:
 
       - uses: mshick/add-pr-comment@v1
         env:
-          image: gcr.io/uwit-mci-iam/${template:app_name}:${{ env.pr_tag }}
+          image: gcr.io/uwit-mci-iam/example-flask-app:${{ env.pr_tag }}
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'

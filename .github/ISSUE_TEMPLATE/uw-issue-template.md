@@ -3,7 +3,7 @@ name: UW Issue Template
 about: Direct members of the UW Community to help@uw.edu
 title: ''
 labels: Triage
-assignees: ${template:maintainer}
+assignees: tomthorogood
 
 ---
 
