@@ -7,8 +7,7 @@ repository for creating new apps.
 ## Using this template
 
 This is a template repository. You can clone it and make a new app with it!
-Just click the "Use this template" button from [Github](https://github.
-com/uwit-iam/example-flask-app).
+Just click the "Use this template" button from [Github](https://github.com/uwit-iam/example-flask-app).
 
 Then, you will need to change the following:
 
@@ -35,8 +34,12 @@ yourself, you should delete these template instructions.
 
 **...to deploy and maintain**
 
-- A running docker daemon
+- [Docker desktop](https://docker.com)
 - [Poetry](https://python-poetry.org)
+
+These instructions assume a unix-like terminal.
+
+After cloning, run `poetry install` to ensure you have all the necessary dependencies.
 
 ## Run locally
 
