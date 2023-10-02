@@ -1,12 +1,12 @@
-# Flask app template repository 
+# Flask app template repository
 
-A barebones flask app that can be run as a docker container and deployed to 
+A barebones flask app that can be run as a docker container and deployed to
 a running kubernetes cluster.
 
 ## Template Finalization Checklist
 
 If this is now the README.md of your repository, congratulations, you've
-"finalized" it to the best of automation's ability. Finish up 
+"finalized" it to the best of automation's ability. Finish up
 by following these steps:
 
 - [ ] Follow the instructions in [kubernetes-config/README](kubernetes-config/README.md)
@@ -15,8 +15,6 @@ by following these steps:
 - [ ] Review the workflows in [.github/.workflow](.github/workflows) and look for the
     "UPDATE" string; this indicates you can configure your workflow based on your needs;
     some automation may not function unti you do this.
-- [ ] Rename the `example_app` directory to something more indicative of your 
-  service's name or function.
 - [ ] Delete this section of the README.
 
 ## Requirements
@@ -96,4 +94,4 @@ Substitute `dev` with some other stage, if you prefer.
 ### Resources:
 
 - [Google Container Repository](https://gcr.io/uwit-mci-iam)
-- 
+-

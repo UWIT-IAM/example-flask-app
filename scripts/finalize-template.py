@@ -1,7 +1,8 @@
+from argparse import ArgumentParser
 import logging
 import os
-from argparse import ArgumentParser
 from pathlib import Path
+import shutil
 from typing import Any, Dict
 
 
@@ -49,19 +50,24 @@ def main():
     }
     logging.basicConfig(level=logging.INFO)
     logging.getLogger(__name__).setLevel(logging.INFO)
-    templates = get_template_files()
-    [finalize_template_file(t, values) for t in templates]
+
     if args.meta_keepalive:
         logging.info("Not deleting template files. You should re-run without the --keepalive flag to clean up!")
-        return
+
+    templates = get_template_files()
+    for t in templates:
+        finalize_template_file(t, values)
+        if not args.meta_keepalive:
+            logging.info(f'Deleting template {t}')
+            os.remove(t)
 
     os.system('poetry update')
 
-    for fn in templates:
-        logging.info(f'Deleting template {fn}')
-        os.remove(fn)
     logging.info('Deleting myself, too. My purpose is fulfilled. Byeeeeeeeeee!')
     os.remove(__file__)
+
+    safe_app_name = args.app_name.replace("-", "_")
+    shutil.move("example_app", safe_app_name)
 
 
 if __name__ == "__main__":
