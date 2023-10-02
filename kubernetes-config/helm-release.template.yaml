@@ -45,7 +45,7 @@ spec:
         memory: "64M"
         cpu: "100m"
     image:
-      name: gcr.io/uwit-mci-iam/${template:app_name}
+      name: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}
       tag: latest  # {"$imagepolicy": "default:${template:app_name}-policy:tag"}
 
   chart:
