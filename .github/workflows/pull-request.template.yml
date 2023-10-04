@@ -46,7 +46,7 @@ jobs:
       APP_VERSION: ${{ needs.update-pr-branch-version.outputs.new-version }}
       pr_tag: pull-request-${{ github.event.pull_request.number }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 

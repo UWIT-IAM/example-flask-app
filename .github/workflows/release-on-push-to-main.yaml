@@ -12,12 +12,11 @@ jobs:
     outputs:
       publishable: ${{ steps.check.outputs.publish }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-          # note: this probably isn't necessary but the below job was failing April 2023
+          # note: this may not longer be necessary but the below job was failing April 2023
           # and using an explicit token fixed that
-          # this change is here for consistency in actions/checkout@v3 config
           token: ${{ secrets.ACTIONS_PAT }}
       # Only publish if the version has changed; otherwise, we would be
       # re-publishing existing stuff without updating the version, and that
@@ -41,11 +40,7 @@ jobs:
     permissions:
       packages: write
     steps:
-      - uses: actions/checkout@v3
-        # ran into a wonky checkout@v3 issue where it would reliably fail but only on this second job
-        # many github issues around this, no clear answer. Things I tried that did not work
-        # - explicit `persist-credentials: true` on both this and the above checkout action
-        # - using actions@v2
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.ACTIONS_PAT }}
 
