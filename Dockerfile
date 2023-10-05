@@ -16,6 +16,9 @@ ENV FLASK_ENV=development \
     FLASK_APP=${APP_MODULE}.app
 EXPOSE ${FLASK_PORT}
 COPY ${APP_MODULE}/ ./${APP_MODULE}
+# install root package now that we've copied it
+# we depend on the metadata for the package to return the version
+RUN poetry install --only-root
 ENTRYPOINT ["flask", "run"]
 
 FROM app AS tests

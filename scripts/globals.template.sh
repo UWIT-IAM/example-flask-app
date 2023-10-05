@@ -1,3 +1,4 @@
+#!/bin/bash
 
 export APP_NAME="${template:app_name}"
 
@@ -13,6 +14,9 @@ function get_poetry_version {
 
 
 function get_promotion_version {
+  # provides default values for the application version to deploy
+  # dev gets current version of app (presumed newest due to CI process)
+  # otherwise promotes dev => eval or eval => prod, depending on target stage
   local target=$1
   case $target in
     dev)

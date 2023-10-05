@@ -18,11 +18,25 @@ spec:
       clusterDomain: iamdev.s.uw.edu
     replicaCount: 1
     ports:
+      # 5000 for flask, 8000 for django, 8080 for tomcat, ...
       containerHttpPort: 5000
     service:
       port: 80
     ingress:
       enabled: true
+      # uncomment these 2 lines to enable SAML SSO
+      # in addition you need to configure SPReg to register a new service provider
+      # - binding: urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+      # - location: https://YOUR_APP...uw.edu/saml/login
+      # https://iam-tools.u.washington.edu/spreg
+      #saml:
+      #  enabled: true
+      # uncomment this line to restrict access to effective members of this group
+      # note you need to configure the SPReg to release this group
+      #  gwsGroupid: fooGroup
+
+      # uncomment this to enable TLS. You'll get an ACME cert automagically
+      #tls: true
     resources:
       requests:
         memory: "32M"
@@ -31,7 +45,7 @@ spec:
         memory: "64M"
         cpu: "100m"
     image:
-      name: gcr.io/uwit-mci-iam/${template:app_name}
+      name: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}
       tag: latest  # {"$imagepolicy": "default:${template:app_name}-policy:tag"}
 
   chart:
