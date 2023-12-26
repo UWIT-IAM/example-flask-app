@@ -54,8 +54,6 @@ jobs:
           pip install poetry
           poetry install
 
-      # TODO: this is *backwards* - rather than update/maintain UWIT-IAM/actions/configure-gcloud-docker@0.1 we are re-writing it
-      #       I do note that it appears keeping *many actions* in a single repo is an anti-pattern
       - name: Auth to Google Cloud
         # important! this 'auth' is referenced as `steps.auth` on the next job
         id: auth
@@ -70,8 +68,6 @@ jobs:
         # requires role: roles/iam.serviceAccountTokenCreator
         run: |-
           echo '${{ steps.auth.outputs.access_token }}' | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
-
-      # end TODO
 
       - run: |
           # this will tag the image with e.g., "pull-request-15"
