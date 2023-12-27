@@ -1,6 +1,6 @@
 **Change Description:** {{ FILL THIS IN }}
 
-**Closes Jira(s)**: {{ FILL THIS IN }}
+**Closes Issue(s)**: {{ FILL THIS IN }}
 
 ## Pull Request checklist
 

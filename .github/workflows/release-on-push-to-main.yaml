@@ -5,67 +5,62 @@ on:
       - main
     paths:
       - pyproject.toml
+  workflow_dispatch:
+
 jobs:
-  check-publishability:
+  publish-if-new-version:
     if: github.repository != 'UWIT-IAM/example-flask-app'
     runs-on: ubuntu-latest
-    outputs:
-      publishable: ${{ steps.check.outputs.publish }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-          # note: this may not longer be necessary but the below job was failing April 2023
-          # and using an explicit token fixed that
-          token: ${{ secrets.ACTIONS_PAT }}
+
       # Only publish if the version has changed; otherwise, we would be
       # re-publishing existing stuff without updating the version, and that
       # could cause problems.
-      - run: |
+      - name: Check if the change should be published
+        run: |
           set -x
           publishable=false
           diff=$(git diff HEAD:pyproject.toml HEAD~1:pyproject.toml) || exit 0
           echo "$diff" | grep '+version ='
-          if [[ "$?" == "0" ]]
+          if [[ "$?" -ne 0 ]]
           then
-            publishable=true
+            echo 'Not publishable - skipping'
+            exit 1
           fi
-          echo "::set-output name=publish::${publishable}"
-        name: Check if the change should be published
-        id: check
-  build-and-publish:
-    needs: [check-publishability]
-    if: needs.check-publishability.outputs.publishable == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
         with:
-          token: ${{ secrets.ACTIONS_PAT }}
+          python-version-file: pyproject.toml
 
       - name: Install and configure poetry
         run: |
           pipx install poetry
           poetry config virtualenvs.create false
 
-      - name: Install app
+      - name: Install package
         run: poetry install
 
-      - run: sudo apt-get -y install jq
+      - name: Install jq for fingerprinter
+        run: sudo apt-get -y install jq
 
-      - name: Log in to the Google container registry
-        run: ./.github/scripts/gcr-login.sh
-        env:
-          # UPDATE: If this repository is not in the UWIT-IAM
-          # org, you must ensure this secret exists, or update this
-          # value to use a secret that does exist. The token
-          # should be base64 encoded, and needs to be created by an
-          # Aux project administrator.
-          #
-          # If you are running inside the UWIT-IAM namespace,
-          # this is available for all repositories to use.
-          GITHUB_TOKEN: ${{ secrets.GCR_TOKEN }}
+      - name: Auth to Google Cloud
+        # important! this 'auth' is referenced as `steps.auth` on the next job
+        id: auth
+        # https://github.com/google-github-actions/auth#authenticating-via-service-account-key-json-1
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.MCI_GCLOUD_AUTH_JSON }}'
+          token_format: 'access_token'
+
+      - name: Auth to Google Artifact Registry
+        # https://github.com/google-github-actions/auth#authenticating-to-container-registry-and-artifact-registry
+        # requires role: roles/iam.serviceAccountTokenCreator
+        run: |-
+          echo '${{ steps.auth.outputs.access_token }}' | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
       - name: Create and push release image; deploy to dev
         run: |
+          # requires role: roles/artifactregistry.createOnPushWriter
           ./scripts/build.sh --release $(poetry version -s) --cache --deploy dev
