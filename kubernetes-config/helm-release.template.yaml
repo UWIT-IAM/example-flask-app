@@ -33,7 +33,7 @@ spec:
       #  enabled: true
       # uncomment this line to restrict access to effective members of this group
       # note you need to configure the SPReg to release this group
-      #  gwsGroupid: fooGroup
+      #  gwsGroupId: fooGroup
 
       # uncomment this to enable TLS. You'll get an ACME cert automagically
       #tls: true
