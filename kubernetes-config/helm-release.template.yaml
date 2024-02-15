@@ -33,6 +33,7 @@ spec:
       #  enabled: true
       # uncomment this line to restrict access to effective members of this group
       # note you need to configure the SPReg to release this group
+      # THIS DOES NOT AUTOMAGICALLY UPDATE VIA fluxd - you have to restart the nginx-saml-proxy pod
       #  gwsGroupId: fooGroup
 
       # uncomment this to enable TLS. You'll get an ACME cert automagically
