@@ -49,6 +49,10 @@ spec:
       name: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}
       tag: latest  # {"$imagepolicy": "default:${template:app_name}-policy:tag"}
 
+    # define environment variables here. All values must be strings - prefer explicit quotes
+    environmentVariables:
+      FOO: "4"  # "4" NOT 4
+
   chart:
     spec:
       chart: basic-web-service
