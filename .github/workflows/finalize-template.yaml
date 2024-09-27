@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: abatilo/actions-poetry@v2.1.4
+      - uses: abatilo/actions-poetry@v2.4.0
       - run: |
           app_name="${{ github.event.inputs.app_name }}"
           maintainer="${{ github.event.inputs.maintainer }}"
@@ -35,13 +35,13 @@ jobs:
           if [[ -z "${maintainer}" ]]
           then
             maintainer="${{ github.actor }}"
-            echo "::notice::app name determined to be ${maintainer}"
+            echo "::notice::app maintainer determined to be ${maintainer}"
           fi
           python scripts/finalize-template.py \
             --app-name ${app_name} --maintainer ${maintainer}
           rm .github/workflows/finalize-template.yaml
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4.0.4
+        uses: peter-evans/create-pull-request@v7.0.5
         with:
           token: ${{ secrets.ACTIONS_PAT }}
           branch: finalize-template
