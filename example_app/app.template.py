@@ -1,4 +1,5 @@
 import os
+import importlib.metadata as importlib_metadata  # Python ^3.9 change
 
 from flask import Flask, jsonify
 
@@ -12,6 +13,7 @@ def index():
 
 
 APP_VERSION = None
+
 
 @app.route("/status")
 def status():
