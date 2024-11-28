@@ -15,6 +15,11 @@ uw-it-build-fingerprinter = "^0.2.6"
 black = "^22.6.0"
 flake8 = "^5.0.2"
 
+[[tool.poetry.source]]
+name = "iam-pypi"
+url = "https://us-python.pkg.dev/uwit-mci-iam/iam-pypi/simple/"
+priority = "explicit"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
