@@ -71,7 +71,7 @@ jobs:
           file: ./Dockerfile
           push: true
           target: dependencies
-          tags: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}.dependencies:${{ env.pr_tag }}
+          tags: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}.dependencies:${{ env.pr_tag }}
           secret-files: |
             "gcloud_auth_credentials=${{ steps.auth.outputs.credentials_file_path }}"
 
@@ -82,7 +82,7 @@ jobs:
           file: ./Dockerfile
           push: true
           target: app
-          tags: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}.app:${{ env.pr_tag }}
+          tags: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}.app:${{ env.pr_tag }}
 
       - name: Build and push Docker image (tests)
         uses: docker/build-push-action@v5
@@ -91,11 +91,11 @@ jobs:
           file: ./Dockerfile
           push: true
           target: tests
-          tags: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}.tests:${{ env.pr_tag }}
+          tags: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}.tests:${{ env.pr_tag }}
 
       - uses: mshick/add-pr-comment@v2
         env:
-          image: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}.app:${{ env.pr_tag }}
+          image: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}.app:${{ env.pr_tag }}
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           allow-repeats: false

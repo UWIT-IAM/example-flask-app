@@ -65,8 +65,7 @@ jobs:
           push: true
           target: app
           tags: |
-            us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}:${{ steps.get-version.outputs.version }}
-            us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}:${{ env.DEPLOYMENT_ID }}
+            us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}:${{ steps.get-version.outputs.version }}
+            us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}:${{ env.DEPLOYMENT_ID }}
           secret-files: |
             "gcloud_auth_credentials=${{ steps.auth.outputs.credentials_file_path }}"
-
