@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route("/", methods=("GET",))
 def index():
     print("Hello there")
-    return 'OK', 200
+    return "OK", 200
 
 
 APP_VERSION = None
@@ -28,4 +28,4 @@ def status():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host="0.0.0.0", port=5000)
