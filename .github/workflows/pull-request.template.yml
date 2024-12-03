@@ -14,6 +14,7 @@ env:
 
 jobs:
   update-pr-branch-version:
+    if: github.repository != 'UWIT-IAM/example-flask-app'
     runs-on: ubuntu-latest
     outputs:
       new-version: ${{ steps.update-version.outputs.new-version }}
@@ -30,6 +31,7 @@ jobs:
         id: update-version
 
   validate-image-quality:
+    if: github.repository != 'UWIT-IAM/example-flask-app'
     permissions:
       contents: write
       id-token: write
