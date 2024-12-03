@@ -4,11 +4,11 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy
 metadata:
-  name: ${template:app_name}-policy
+  name: ${template:app_name_hyphen}-policy
   namespace: default # must be 'default' in MCI, even if app itself is not in default
 spec:
   imageRepositoryRef:
-    name: ${template:app_name}-gar
+    name: ${template:app_name_hyphen}-gar
   filterTags:
     pattern: '^deploy-dev.(?P<ts>[0-9\.]+)\.v.+$'
     extract: '$ts'
@@ -19,7 +19,7 @@ spec:
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageRepository
 metadata:
-  name: ${template:app_name}-gar
+  name: ${template:app_name_hyphen}-gar
   namespace: default # must be 'default' in MCI, even if app itself is not in default
 spec:
   image: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}

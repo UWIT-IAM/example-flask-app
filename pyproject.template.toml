@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "${template:app_name}"
+name = "${template:app_name_underscore}"
 version = "0.1.0"
 description = ""
 authors = []

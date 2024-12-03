@@ -9,12 +9,12 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: ${template:app_name}
+  name: ${template:app_name_hyphen}
   namespace: default
 spec:
   values:
     app:
-      name: ${template:app_name}
+      name: ${template:app_name_hyphen}
       clusterDomain: iamdev.s.uw.edu
     replicaCount: 1
     ports:
@@ -45,8 +45,8 @@ spec:
         memory: "64M"
         cpu: "100m"
     image:
-      name: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}
-      tag: latest  # {"$imagepolicy": "default:${template:app_name}-policy:tag"}
+      name: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}
+      tag: latest  # {"$imagepolicy": "default:${template:app_name_underscore}-policy:tag"}
 
   chart:
     spec:

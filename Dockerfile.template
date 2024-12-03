@@ -4,12 +4,9 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev --no-root --no-interaction
 
 FROM dependencies AS app
-# If you change your app directory, you must also
-# change the APP_MODULE here to match. Alternativel,
-# you can also
-# pass it into your build using `--build-arg`
-# (see official docker documentation).
-ARG APP_MODULE=example_app
+# If you change your app directory to e.g., use src/ you MUST
+# change the APP_MODULE here to match OR supply a --build-arg
+ARG APP_MODULE=${template:app_name_underscore}
 ARG FLASK_PORT=5000
 ENV FLASK_ENV=development \
     PYTHONPATH=${APP_MODULE} \

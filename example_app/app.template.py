@@ -19,7 +19,7 @@ APP_VERSION = None
 def status():
     global APP_VERSION
     if APP_VERSION is None:
-        APP_VERSION = importlib_metadata.version("${template:app_name}")
+        APP_VERSION = importlib_metadata.version("${template:app_name_underscore}")
 
     deployment_id = os.environ.get("DEPLOYMENT_ID")
     status = 200 if deployment_id else 503
