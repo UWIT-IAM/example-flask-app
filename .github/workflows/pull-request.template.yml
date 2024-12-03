@@ -10,8 +10,6 @@ on:
       - '**.md'
 
 env:
-  GCR_TOKEN: ${{ secrets.GCR_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   STEP_SCRIPTS: ${{ github.workspace }}/.github/steps/pull-request
 
 jobs:
@@ -27,7 +25,7 @@ jobs:
 
       - uses: uwit-iam/actions/update-pr-branch-version@main
         with:
-          github-token: ${{ env.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           version-guidance: ${{ steps.guidance.outputs.guidance }}
         id: update-version
 
@@ -47,50 +45,57 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Set up environment
-        id: configure
-        run: |
-          sudo apt-get -y install jq
-          pip install poetry
-          poetry install
 
-      - name: Auth to Google Cloud
-        # important! this 'auth' is referenced as `steps.auth` on the next job
+      - uses: uwit-iam/action-setup-poetry-project@main
         id: auth
-        # https://github.com/google-github-actions/auth#authenticating-via-service-account-key-json-1
-        uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.MCI_GCLOUD_AUTH_JSON }}'
-          token_format: 'access_token'
-
-      - name: Auth to Google Artifact Registry
-        # https://github.com/google-github-actions/auth#authenticating-to-container-registry-and-artifact-registry
-        # requires role: roles/iam.serviceAccountTokenCreator
-        run: |-
-          echo '${{ steps.auth.outputs.access_token }}' | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
-
-      - run: |
-          # this will tag the image with e.g., "pull-request-15"
-          # NOTE that this produces tags for ${template:app_name}.dependencies, ${template:app_name}.app, ${template:app_name}.tests (but not "${template:app_name}")
-          ./scripts/build.sh -t "${{ env.pr_tag }}" --cache
-
-      # TODO: this container image URI should be dynamically generated from e..g, fingerprints.yaml
-      - run: docker push us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}.app:${{ env.pr_tag }}
+          credentials: "${{ secrets.MCI_GCLOUD_AUTH_JSON }}"
+          enable_private_docker: true
+          enable_private_pypi: true
 
       - name: Run validation checks and tests
         run: |
           poetry run pytest
           poetry run flake8
           poetry run black --check .
-        id: run-validations
 
-      - uses: mshick/add-pr-comment@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image (dependencies)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          target: dependencies
+          tags: us-docker.pkg.dev/uwit-mci-iam/containers/netid_arrest.dependencies:${{ env.pr_tag }}
+          secret-files: |
+            "gcloud_auth_credentials=${{ steps.auth.outputs.credentials_file_path }}"
+
+      - name: Build and push Docker image (app)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          target: app
+          tags: us-docker.pkg.dev/uwit-mci-iam/containers/netid_arrest.app:${{ env.pr_tag }}
+
+      - name: Build and push Docker image (tests)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          target: tests
+          tags: us-docker.pkg.dev/uwit-mci-iam/containers/netid_arrest.tests:${{ env.pr_tag }}
+
+      - uses: mshick/add-pr-comment@v2
         env:
-          # TODO: this container image URI should be dynamically generated from e..g, fingerprints.yaml
           image: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}.app:${{ env.pr_tag }}
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
           allow-repeats: false
           message: |
             Download and run the latest build with:
