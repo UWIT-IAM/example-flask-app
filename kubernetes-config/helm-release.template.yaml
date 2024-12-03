@@ -46,7 +46,7 @@ spec:
         cpu: "100m"
     image:
       name: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}
-      tag: latest  # {"$imagepolicy": "default:${template:app_name_underscore}-policy:tag"}
+      tag: latest  # {"$imagepolicy": "default:${template:app_name_hyphen}-policy:tag"}
 
   chart:
     spec:
