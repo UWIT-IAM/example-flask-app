@@ -51,19 +51,40 @@ jobs:
       - name: Install package
         run: poetry install
 
-      - name: Install jq for fingerprinter
-        run: sudo apt-get -y install jq
-
       - name: Update env with promotion version that was provided
         if: github.event.inputs.version
         run: echo "target_version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
 
       - name: Update env with promotion version if not provided
         if: '! env.target_version'
+        shell: bash
         run: |
-          source ./scripts/globals.sh
-          target_version=$(get_promotion_version ${{ github.event.inputs.cluster }})
-          echo "target_version=${target_version}" >> $GITHUB_ENV
+          # $1 will be package name, $2 will be current version
+          set $(poetry version)
+
+          case "${{ github.event.inputs.cluster }}" in
+            dev)
+              version="$2"
+              echo "Would set version to '$version' (from poetry version)"
+              ;;
+            eval)
+              # substitute '_' for '-' in APP_NAME
+              url="https://${1//_/-}.iamdev.s.uw.edu/status"
+              version=$(curl --silent $url | python -c "import json, sys; print(json.load(sys.stdin)['version'])")
+              echo "After consulting dev the eval version will be ${version}"
+              ;;
+            prod)
+              # substitute '_' for '-' in APP_NAME
+              url="https://${1//_/-}.iameval.s.uw.edu/status"
+              version=$(curl --silent $url | python -c "import json, sys; print(json.load(sys.stdin)['version'])")
+              echo "After consulting eval the prod version will be ${version}"
+              ;;
+            *)
+              echo "Invalid cluster! Pick one of dev|eval|prod"
+              exit 1
+              ;;
+          esac
+          echo "target_version=${version}" >> $GITHUB_ENV
 
       - name: Auth to Google Cloud
         # important! this 'auth' is referenced as `steps.auth` on the next job
@@ -80,10 +101,14 @@ jobs:
         run: |-
           echo '${{ steps.auth.outputs.access_token }}' | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev
 
-      - name: Deploy version ${{ env.target_version }}
+      - name: Tag version ${{ env.target_version }} for ${{ github.event.inputs.cluster }}
         id: deploy
         run: |
-          echo "::notice::Deploying appid version ${{ env.target_version }} to ${{ github.event.inputs.cluster }}"
-          ./scripts/build.sh \
-            --deploy ${{ inputs.cluster }} \
-            -dversion ${{ env.target_version }}
+          # timestamp and deploy_tag are not DRY - see also release-on-push-to-main.yaml
+          timestamp=$(date --utc +%Y.%m.%d.%H.%M.%S)
+          deploy_tag="deploy-${{ github.event.inputs.cluster }}.${timestamp}.v${{ env.target_version }}"
+          echo "::notice::Deploying appid version ${{ env.target_version }} to ${{ github.event.inputs.cluster }} as ${deploy_tag}"
+          # this will create a new tag (deploy_tag) on an existing tag (env.target_version)
+          docker buildx imagetools create \
+            --tag us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}:${deploy_tag} \
+            us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}:${{ env.target_version }}
