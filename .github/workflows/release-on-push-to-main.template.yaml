@@ -56,16 +56,14 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
-        env:
-          DEPLOYMENT_ID: deploy-dev.${{ steps.get-version.outputs.timestamp }}.v${{ steps.get-version.outputs.version }}
         with:
-          build-args: DEPLOYMENT_ID=${{ env.DEPLOYMENT_ID }}
           context: .
           file: ./Dockerfile
           push: true
           target: app
           tags: |
             us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}:${{ steps.get-version.outputs.version }}
-            us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}:${{ env.DEPLOYMENT_ID }}
+            us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}:deploy-dev.${{ steps.get-version.outputs.timestamp }}.v${{ steps.get-version.outputs.version }}
+            us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}:latest
           secret-files: |
             "gcloud_auth_credentials=${{ steps.auth.outputs.credentials_file_path }}"

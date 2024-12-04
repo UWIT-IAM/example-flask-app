@@ -38,7 +38,8 @@ jobs:
       - name: Install and configure poetry
         run: |
           pipx install poetry
-          poetry config virtualenvs.create false
+          # PermissionERror in Python creating ... a directory?!
+          # poetry config virtualenvs.create false
 
       - if: github.event.inputs.cluster == 'prod'
         run: |
