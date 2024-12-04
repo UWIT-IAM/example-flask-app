@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "${template:app_name}"
+name = "${template:app_name_underscore}"
 version = "0.1.0"
 description = ""
 authors = []
@@ -23,3 +23,7 @@ priority = "explicit"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+# coordinated with setup.cfg max-line-length
+line-length = 119

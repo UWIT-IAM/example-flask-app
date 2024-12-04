@@ -3,7 +3,7 @@ name: Finalize Template
 on:
   workflow_dispatch:
     inputs:
-      app-name:
+      app_name:
         required: false
         description: >
           This is the name of your app; if left blank, it will match the
