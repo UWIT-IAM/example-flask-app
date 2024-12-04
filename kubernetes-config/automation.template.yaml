@@ -22,7 +22,7 @@ metadata:
   name: ${template:app_name_hyphen}-gar
   namespace: default # must be 'default' in MCI, even if app itself is not in default
 spec:
-  image: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name}
+  image: us-docker.pkg.dev/uwit-mci-iam/containers/${template:app_name_hyphen}
   interval: 2m0s
   secretRef:
     name: flux-mci-registry-credential
