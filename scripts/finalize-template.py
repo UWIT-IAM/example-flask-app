@@ -18,7 +18,7 @@ def get_parser():
 
 
 def get_template_files():
-    return [str(path.joinpath()) for path in list(Path(".").rglob("*.template.*"))]
+    return [str(path.joinpath()) for path in list(Path(".").rglob("*.template*"))]
 
 
 def finalize_template_file(path: str, args: Dict[str, Any]):
